@@ -1,0 +1,54 @@
+&input
+
+! Geolocalizacion y datos astronomicos             
+
+tz = -4.                    ! Time zone 
+
+phi = -33.033d0            ! latitude (deg)
+
+sigma = -70.6d0            ! longitude (deg)
+
+elev = 70.0d0              ! elevation (m)
+
+press = 1010.d0            ! pressure (mbar)
+
+Temp = 20.5d0              ! temperature (Celsius)
+
+Delta_T = 65.7768d0        ! difference between Earth rotation time and terrestrial
+                           ! time (get it from Astronomical Almanac) 
+                           
+! Visualizacion y metodos de seguimiento solar
+
+vs = 0						! Visualizacion en pantalla; 1 encendido, 0 apagado
+tm = 6						! tracking method; 
+							!	0: Disabled
+							!	1: Tilted surface, fixed.
+							!	2: Horizontal east-west axis, single daily adjustment
+							!	3: Horizontal east-west axis, continous adjustment
+							!	4: Horizontal north-south axis, continous adjustment
+							!	5: Fixed slope rotated about a vertical axis
+							!	6: Continuously tracking about two axes
+
+sm =3						! Radiation on Sloped surface
+							!	0: Isotropic radiation (Hottel and Woertz)
+							!	1: Isotropic diffuse (Liu and Jordan)
+							!	2: (Hay and Davis)
+							!	3: HDKR (Reindl et al.)
+
+! Input data
+Indata = 0					!	0: Rad. Global(h), Diffuse(h) and Direct(n)
+							!	1: Rad. Global(h)
+							!	2: Rad. Global(h) and Diffuse(h)
+							!	3: Rad. Global(h) and Direct(n)
+
+QC = 0						! Quality Control (0: Without QC, 1: With QC)
+
+Graph = 1 					! Print data
+!							!	0: Disabled
+							!	1: PDF
+							!	2: 
+
+							
+!Inform = 1 				! Make a inform of the data process (Puntos, salida, posicion, modelos, programa, copyright y version)							
+							
+/
