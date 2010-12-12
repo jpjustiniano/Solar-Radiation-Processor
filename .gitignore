@@ -1,0 +1,8 @@
+*~
+*.o
+*.mod
+*.pdf
+*.plot
+*.csv
+*.txt
+tmp/
