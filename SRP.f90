@@ -1,49 +1,15 @@
-
-!//////////////////////////////////////////////
+!///////////////////////////////////////////////////////////////////////////////////////
 !			Solar Radiation Processor (SRP)
 !					for
 !			Solar Energy Application
 !
-!
 !   			Juan Pablo Justiniano
 !   			jpjustiniano@gmail.com
-!
 !   
 !	Date:			June 4, 2012 
 !
 !	Description:  	This program ...
-!
-!  	Note:         
-!
-!///////////////////////////////////////////////////
-
-! Copyright (C) 2010 Juan Pablo Justiniano
-!
-!Redistribution and use in source and binary forms, with or without
-!modification, are permitted provided that the following conditions are met:
-!1. Redistributions of source code must retain the above copyright
-!   notice, this list of conditions and the following disclaimer.
-!2. Redistributions in binary form must reproduce the above copyright
-!   notice, this list of conditions and the following disclaimer in the
-!   documentation and/or other materials provided with the distribution.
-!3. All advertising materials mentioning features or use of this software
-!   must display the following acknowledgement:
-!   This product includes software developed by Juan Pablo Justiniano.
-!4. Neither the name of Juan Pablo Justiniano nor the
-!   names of its contributors may be used to endorse or promote products
-!   derived from this software without specific prior written permission.
-!
-!THIS SOFTWARE IS PROVIDED BY JUAN PABLO JUSTINIANO ''AS IS'' AND ANY
-!EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-!WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-!DISCLAIMED. IN NO EVENT SHALL JUAN PABLO JUSTINIANO BE LIABLE FOR ANY
-!DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-!(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-!LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-!ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-!(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-!SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+!///////////////////////////////////////////////////////////////////////////////////////
 
 !***********************************************************************************************************************************
 !  Main program
@@ -53,91 +19,85 @@
 ! TM2 y 3
 ! Formato de salida de grafico
 ! Revisar Michalski
-
+! Revisar datos de entrda en solar.dat
 
 Program SRP
-USE DISLIN
+
+use DISLIN
+use Solar_dat
+
 implicit none
 
+ character (8)	:: date	! Fecha (YYYYMMDD) 
+Integer	:: version 		! Version Software
+real 		:: start_time, stop_time	! Inicio y fin de tiempo de procesos
 
-character (8)	:: date
-
-Real	:: lat,long             !! latitude, longitude
-Real    :: tz                   !! time zone
-Real    :: sunaz, sune		! Sun azimuth and elevation
-Real 	:: dec			! Solar Declination
-Integer :: vs			! visualizacion en pantalla (0;1)
-Integer :: tm			! metodo de seguimiento solar
-Integer :: sm			! modelo de radiacion difusa
-Integer :: Indata		! Input data
-Real	:: hora
-Integer :: hh,mm,ss
-Integer :: dtalog		! dtalog: formato de datos (Campbell o Labview)
-Integer :: horac		! hora en formato campbell (hhmm)
-Real(8) :: slope		! pendiente de la superficie
-Real(8) :: gamma		! Surface azimuth angle; South=0; East(-); West(+)
-Real(8) :: costheta, costhetaz, thetaz  ! Angle of incidence, zenith angle
-Real(8) :: r0, Rb
-Integer :: ierror, errorread, ierror2
+Real		:: lat,long		! latitude, longitude
+Real		:: tz				! time zone
+Real		:: sunaz, sune	! Sun azimuth and elevation
+Real		:: dec			! Solar Declination
+Integer		:: vs				! visualizacion en pantalla (0;1)
+Integer 	:: tm				! metodo de seguimiento solar
+Integer 	:: sm			! modelo de radiacion difusa
+Integer 	:: Indata		! Input data
+Real		:: hora
+Integer 	:: hh,mm,ss
+Integer 	:: dtalog		! dtalog: formato de datos (Campbell o Labview)
+Integer 	:: horac			! hora en formato campbell (hhmm)
+Real(8) 	:: slope			! pendiente de la superficie
+Real(8) 	:: gamma		! Surface azimuth angle; South=0; East(-); West(+)
+Real(8) 	:: costheta, costhetaz, thetaz  ! Angle of incidence, zenith angle
+Real(8) 	:: r0, Rb
+Integer 	:: ierror, errorread, ierror2
 Integer	:: year,month,day, diaj		! Leidos del archivo de datos
-Real 	:: anno, diaju
+Real		:: anno, diaju
 Integer	:: yearj,monthj,dayj		! Usados para los calculos
-Real(8) :: radGlo,radDif,radDir,radComp, radDirHor, radExt, radExtHor
-Real(8) :: Ai, ff, It, rho, rs, F
-Real 	:: Kt = 0, Kd = 0, Kn = 0
-Integer :: QC	
-Integer :: Graph			! Graph data
-character(len=70) 	:: argument
-character(len=4) 	:: xxx
+Real(8)	:: radGlo,radDif,radDir,radComp, radDirHor, radExt, radExtHor
+Real(8)	:: Ai, ff, It, rho, rs, F
+Real		:: Kt = 0, Kd = 0, Kn = 0
+Integer 	:: QC	
+Integer 	:: Graph			! Graph data
+ Character(len=70) 	:: argument
+ Character(len=4) 	:: xxx
 Real 	:: ha,soldst
-Real, EXTERNAL 		:: norm_hora
-
-!...constants
-Real(8), parameter 	:: pi = 3.141592653589793238462643d0
-Real(8), parameter 	:: deg_to_rad = pi/180.d0, rad_to_deg = 180.d0/pi
-
-namelist/input/tz,lat,long,rho,vs,tm, sm, Indata, QC, Graph
+Real, external 		:: norm_hora
 
 !----------------------------------------------------------------------------------------------------------------------------------
 !  Main program code
 !----------------------------------------------------------------------------------------------------------------------------------
-print *,"SRP v0.1 Juan Pablo Justiniano  08 November  2010"
-print *,"http://jpjustiniano.wordpress.com"
-print *,"Copyright (C) 2009 through 20010, Juan Pablo Justiniano <jpjustiniano@gmail.com>"
-print *,"SRP comes with ABSOLUTELY NO WARRANTY"
-print *,"This is free software licensed under the Gnu General Public License version 3"
-
+Version = 0.1
 call date_and_time(date=date)
+
+print *,"Solar Radiation Processor, ", Version, " Juan Pablo Justiniano" //date(1:4) 
+print *,"http://jpjustiniano.wordpress.com"
+print *,"Copyright (C) 2009 through"//date(1:4) //, Juan Pablo Justiniano <jpjustiniano@gmail.com>"
+
+!open(unit=1,file='solar.dat', status='old', action='read') ! Revisar datos que se leen y reemplazar por ./SRP < datos.in 
+!read(1,input)       ! lee los datos de localizacion
+!close(1)
 
 call get_command_argument(1, argument)
 
-open(unit=1,file='solar.dat', status='old', action='read')
-read(1,input)       !lee los datos de localizacion
-close(1)
-
-write (*,*)
-Write (*,*) ' Solar Radiation Processor, ', version
-
 write (xxx,*) argument(LEN_TRIM(argument) - 2 : LEN_TRIM(argument))
-Select case (xxx)	!Selector de formato de archivo
+Select Case (xxx)	! Selector de formato de archivo
 Case (' txt', ' TXT')
 	write(*,*) ' Texto, File: ',trim(argument)
-!dtalog==1 
+	dtalog==1 
 Case (' tm2',' TM2')
 	write(*,*) ' TMY2, File: ',trim(argument)
-!dtalog==2
+	dtalog==2
 Case (' tm3',' TM3')
 	write(*,*) ' TMY3, File: ',trim(argument)
-!dtalog==3
+	dtalog==3
 Case (' csv',' CSV')
 	write(*,*) ' CSV, File: ',trim(argument)
-!dtalog==4
+	dtalog==4
 Case default
 	write(*,*) ' File: datos.csv'
-  argument ='datos.csv'
+	argument ='datos.csv'
 end select
 
-SELECT CASE (tm) 	! Tracking method 
+Select Case (tm) 	! Tracking method 
 Case (0)
 	write(*,*) ' Tracking method: Disabled '
 Case (1)

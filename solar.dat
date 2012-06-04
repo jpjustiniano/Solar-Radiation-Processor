@@ -1,48 +1,54 @@
-&input
+Module Solar_dat
 
-! Geolocalizacion y datos astronomicos             
+	Implicit none
 
-tz = -4.        		! Time zone 
+	!...constants
+	Real(8), public, parameter 	:: pi = 3.141592653589793238462643d0
+	Real(8), public, parameter 	:: deg_to_rad = pi/180.d0, rad_to_deg = 180.d0/pi
 
-lat = -33.4977d0      	! latitude (deg)
+	real, public, parameter :: tz, lat, long, rho
 
-long = -70.6064d0       	! longitude (deg)
+	! Geolocalizacion y datos astronomicos             
+	tz = -4.        		! Time zone 
+	lat = -33.4977d0      		! latitude (deg)
+	long = -70.6064d0       	! longitude (deg)
+	rho = 0.2 			! Ground reflectance (0-1.)
 
-rho = 0.2 				! Ground reflectance (0-1.)
+
+End Module
+
+	! Visualizacion y metodos de seguimiento solar
+
+	!vs = 0						! Visualizacion en pantalla; 1 encendido, 0 apagado
+	!tm = 0						! tracking method; 
+								!	0: Disabled
+								!	1: Tilted surface, fixed.
+								!	2: Horizontal east-west axis, single daily adjustment
+								!	3: Horizontal east-west axis, continous adjustment
+								!	4: Horizontal north-south axis, continous adjustment
+								!	5: Fixed slope rotated about a vertical axis
+								!	6: Continuously tracking about two axes
+
+	!sm =3						! Radiation on Sloped surface
+								!	0: Isotropic radiation (Hottel and Woertz)
+								!	1: Isotropic diffuse (Liu and Jordan)
+								!	2: (Hay and Davis)
+								!	3: HDKR (Reindl et al.)
+
+	! Input data
+	!Indata = 0						!	0: Rad. Global(h), Diffuse(h) and Direct(n)
+								!	1: Rad. Global(h)
+								!	2: Rad. Global(h) and Diffuse(h)
+								!	3: Rad. Global(h) and Direct(n)
+
+	!QC = 0						! Quality Control (0: Without QC, 1: With QC)
+
+	!Graph = 1 					! Print data
+	!							!	0: Disabled
+								!	1: PDF
+								!	2: 
 
 
-! Visualizacion y metodos de seguimiento solar
-
-vs = 0						! Visualizacion en pantalla; 1 encendido, 0 apagado
-tm = 0						! tracking method; 
-							!	0: Disabled
-							!	1: Tilted surface, fixed.
-							!	2: Horizontal east-west axis, single daily adjustment
-							!	3: Horizontal east-west axis, continous adjustment
-							!	4: Horizontal north-south axis, continous adjustment
-							!	5: Fixed slope rotated about a vertical axis
-							!	6: Continuously tracking about two axes
-
-sm =3						! Radiation on Sloped surface
-							!	0: Isotropic radiation (Hottel and Woertz)
-							!	1: Isotropic diffuse (Liu and Jordan)
-							!	2: (Hay and Davis)
-							!	3: HDKR (Reindl et al.)
-
-! Input data
-Indata = 0						!	0: Rad. Global(h), Diffuse(h) and Direct(n)
-							!	1: Rad. Global(h)
-							!	2: Rad. Global(h) and Diffuse(h)
-							!	3: Rad. Global(h) and Direct(n)
-
-QC = 0						! Quality Control (0: Without QC, 1: With QC)
-
-Graph = 1 					! Print data
-!							!	0: Disabled
-							!	1: PDF
-							!	2: 
 
 							
-!Inform = 1 				! Make a inform of the data process (Puntos, salida, posicion, modelos, programa, copyright y version)							
-							
-/
+
