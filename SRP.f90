@@ -9,7 +9,7 @@
 !   			jpjustiniano@gmail.com
 !
 !   
-!	Date:			November 08, 2010 
+!	Date:			June 4, 2012 
 !
 !	Description:  	This program ...
 !
@@ -59,39 +59,42 @@ Program SRP
 USE DISLIN
 implicit none
 
-real	:: lat,long             !! latitude, longitude
-real    :: tz                   !! time zone
-real    :: sunaz, sune		! Sun azimuth and elevation
-real 	:: dec			! Solar Declination
-INTEGER :: vs			! visualizacion en pantalla (0;1)
-INTEGER :: tm			! metodo de seguimiento solar
-INTEGER :: sm			! modelo de radiacion difusa
-INTEGER :: Indata		! Input data
-real	:: hora
-integer :: hh,mm,ss
-INTEGER :: dtalog		! dtalog: formato de datos (Campbell o Labview)
-INTEGER :: horac		! hora en formato campbell (hhmm)
-REAL(8) :: slope		! pendiente de la superficie
-REAL(8) :: gamma		! Surface azimuth angle; South=0; East(-); West(+)
-REAL(8) :: costheta, costhetaz, thetaz  ! Angle of incidence, zenith angle
-REAL(8) :: r0, Rb
-INTEGER :: ierror, errorread, ierror2
-INTEGER	:: year,month,day, diaj		! Leidos del archivo de datos
-REAL 	:: anno, diaju
-integer	:: yearj,monthj,dayj		! Usados para los calculos
-REAL(8) :: radGlo,radDif,radDir,radComp, radDirHor, radExt, radExtHor
-REAL(8) :: Ai, ff, It, rho, rs, F
+
+character (8)	:: date
+
+Real	:: lat,long             !! latitude, longitude
+Real    :: tz                   !! time zone
+Real    :: sunaz, sune		! Sun azimuth and elevation
+Real 	:: dec			! Solar Declination
+Integer :: vs			! visualizacion en pantalla (0;1)
+Integer :: tm			! metodo de seguimiento solar
+Integer :: sm			! modelo de radiacion difusa
+Integer :: Indata		! Input data
+Real	:: hora
+Integer :: hh,mm,ss
+Integer :: dtalog		! dtalog: formato de datos (Campbell o Labview)
+Integer :: horac		! hora en formato campbell (hhmm)
+Real(8) :: slope		! pendiente de la superficie
+Real(8) :: gamma		! Surface azimuth angle; South=0; East(-); West(+)
+Real(8) :: costheta, costhetaz, thetaz  ! Angle of incidence, zenith angle
+Real(8) :: r0, Rb
+Integer :: ierror, errorread, ierror2
+Integer	:: year,month,day, diaj		! Leidos del archivo de datos
+Real 	:: anno, diaju
+Integer	:: yearj,monthj,dayj		! Usados para los calculos
+Real(8) :: radGlo,radDif,radDir,radComp, radDirHor, radExt, radExtHor
+Real(8) :: Ai, ff, It, rho, rs, F
 Real 	:: Kt = 0, Kd = 0, Kn = 0
-INTEGER :: QC	
-INTEGER :: Graph			! Graph data
-CHARACTER(len=70) 	:: argument
-CHARACTER(len=4) 	:: xxx
+Integer :: QC	
+Integer :: Graph			! Graph data
+character(len=70) 	:: argument
+character(len=4) 	:: xxx
 Real 	:: ha,soldst
-REAL, EXTERNAL 		:: norm_hora
+Real, EXTERNAL 		:: norm_hora
 
 !...constants
-real(8), parameter 	:: pi = 3.141592653589793238462643d0
-real(8), parameter 	:: deg_to_rad = pi/180.d0, rad_to_deg = 180.d0/pi
+Real(8), parameter 	:: pi = 3.141592653589793238462643d0
+Real(8), parameter 	:: deg_to_rad = pi/180.d0, rad_to_deg = 180.d0/pi
 
 namelist/input/tz,lat,long,rho,vs,tm, sm, Indata, QC, Graph
 
@@ -103,6 +106,8 @@ print *,"http://jpjustiniano.wordpress.com"
 print *,"Copyright (C) 2009 through 20010, Juan Pablo Justiniano <jpjustiniano@gmail.com>"
 print *,"SRP comes with ABSOLUTELY NO WARRANTY"
 print *,"This is free software licensed under the Gnu General Public License version 3"
+
+call date_and_time(date=date)
 
 call get_command_argument(1, argument)
 
@@ -466,22 +471,22 @@ END Program SRP
 
 Subroutine TMY23head(tz,latitude,longitude,elevation)
 implicit none
-INTEGER :: n=1, ierror, sel=1
+Integer :: n=1, ierror, sel=1
 
 !TMY2  Head
- CHARACTER (LEN=5) :: WBAN 
- CHARACTER (LEN=22) :: city
- CHARACTER (LEN=2) ::  state
- INTEGER :: tz
- CHARACTER (LEN=1) ::  latitude
- REAL :: LatDeg
- REAL :: LatMin
- CHARACTER (LEN=1) ::  longitude
- REAL :: LonDeg
- REAL :: LonMin 
- INTEGER :: Elevation 
+ character (LEN=5) :: WBAN 
+ character (LEN=22) :: city
+ character (LEN=2) ::  state
+ Integer :: tz
+ character (LEN=1) ::  latitude
+ Real :: LatDeg
+ Real :: LatMin
+ character (LEN=1) ::  longitude
+ Real :: LonDeg
+ Real :: LonMin 
+ Integer :: Elevation 
  
-  INTEGER :: errorread
+  Integer :: errorread
  
 1022 FORMAT ( 1X,A5,1X,A22,1X,A2,1X,I3,1X,A1,1X,I2,1X,I2,1X,A1,1X,I3,1X,I2,2X,I4 ) !Header
 OPEN (UNIT=8, FILE='datos3.tm2', IOSTAT=errorread)	      
@@ -498,8 +503,8 @@ End Subroutine TMY23head
 
 Subroutine seconds_hhmmss(time,hh_lst,mm_lst,ss_lst)
 implicit none
-real(8) time, hh_dec
-integer hh_lst,mm_lst,ss_lst
+Real(8) time, hh_dec
+Integer hh_lst,mm_lst,ss_lst
    hh_dec = time/3600.d0
    hh_lst = int(hh_dec) 
    mm_lst = int((hh_dec - hh_lst)*60.d0)
@@ -520,11 +525,11 @@ FUNCTION norm_hora(value)
 ! Cambio de hora a forma decimal
 IMPLICIT NONE
 
-INTEGER, INTENT(IN) :: value 
-REAL :: norm_hora 
-CHARACTER(len=4) :: string
-CHARACTER(len=2) :: hh, mm 
-INTEGER :: h, m
+Integer, INTENT(IN) :: value 
+Real :: norm_hora 
+character(len=4) :: string
+character(len=2) :: hh, mm 
+Integer :: h, m
 
 string = ' '
 
@@ -533,7 +538,7 @@ hh=string(1:2)
 mm=string(3:4)
 READ (hh,'(I2)') h
 READ (mm,'(I2)') m
-norm_hora = REAL(h)*3600.+REAL(m)*60.
+norm_hora = Real(h)*3600.+Real(m)*60.
 END FUNCTION norm_hora
 
 
@@ -542,12 +547,12 @@ SUBROUTINE doy (day_of_year, year, day, month)
 ! This program calculates the date corresponding to a specified julian day.
 IMPLICIT NONE
 
-INTEGER, INTENT(IN) :: day_of_year  !Day of year
-INTEGER, INTENT(IN) :: year         !Year (yyyy)
-INTEGER, INTENT(OUT) :: month        !Month (mm)
-INTEGER, INTENT(OUT) :: day          !Day (dd)
-INTEGER :: i            !Index,variable
-INTEGER :: leap_day     !Extra day for leap year
+Integer, INTENT(IN) :: day_of_year  !Day of year
+Integer, INTENT(IN) :: year         !Year (yyyy)
+Integer, INTENT(OUT) :: month        !Month (mm)
+Integer, INTENT(OUT) :: day          !Day (dd)
+Integer :: i            !Index,variable
+Integer :: leap_day     !Extra day for leap year
 
 
 ! Check for leap year, and add extra day if necessary
@@ -595,12 +600,12 @@ SUBROUTINE diajuliano (day, month, year, dayj)
 
 IMPLICIT NONE
 ! Data dictionary: declare variable types, definitions, & units
-INTEGER, INTENT(IN):: day        	! Day (dd)
-INTEGER, INTENT(IN) :: month     	! Month (mm)
-INTEGER, INTENT(IN) :: year  		! Year (yyyy)
-INTEGER, INTENT(out) :: dayj 	! Day of year
-INTEGER :: i            			! Index,variable
-INTEGER :: leap_day     			! Extra day for leap year
+Integer, INTENT(IN):: day        	! Day (dd)
+Integer, INTENT(IN) :: month     	! Month (mm)
+Integer, INTENT(IN) :: year  		! Year (yyyy)
+Integer, INTENT(out) :: dayj 	! Day of year
+Integer :: i            			! Index,variable
+Integer :: leap_day     			! Extra day for leap year
 
 ! Check for leap year, and add extra day if necessary
 IF ( MOD(year,400) == 0 ) THEN
